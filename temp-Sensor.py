@@ -105,20 +105,21 @@ while True:
 
 	print('Ambient Temperature: {0:0.1f} F'.format(temp * 9.0 / 5.0 + 32.0))
 	print('Ambient Humidity:	{0:0.1f} %'.format(humidity))
+
 	for device in devices:
 		reading = read_temp(device)
 		print("Sensor: " + str(reading[0]) + " " + str(reading[2]) + " F" )
 
-		# Append the data in the spreadsheet, including a timestamp
-		try:
-	 		worksheet.append_row((datetime.datetime.now(), temp * 9.0 / 5.0 + 32.0, humidity))
-		except:
-			# Error appending data, most likely because credentials are stale.
-			# Null out the worksheet so a login is performed at the top of the loop.
-			print('Append error, logging in again')
-			worksheet = None
-			time.sleep(FREQUENCY_SECONDS)
-			continue
+	# Append the data in the spreadsheet, including a timestamp
+	try:
+ 		worksheet.append_row((datetime.datetime.now(), temp * 9.0 / 5.0 + 32.0, humidity))
+	except:
+		# Error appending data, most likely because credentials are stale.
+		# Null out the worksheet so a login is performed at the top of the loop.
+		print('Append error, logging in again')
+		worksheet = None
+		time.sleep(FREQUENCY_SECONDS)
+		continue
 
 	# Wait 30 seconds before continuing
 	print('Wrote a row to {0}'.format(GDOCS_SPREADSHEET_NAME))
