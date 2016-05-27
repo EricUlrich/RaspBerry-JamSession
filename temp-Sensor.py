@@ -26,13 +26,13 @@ DHT_TYPE = Adafruit_DHT.DHT11
 # Example of sensor connected to Raspberry Pi GPIO 23
 DHT_PIN  = 4
 
-GDOCS_OAUTH_JSON       = '../RaspBerryJam-e443aed01834.json'
+GDOCS_OAUTH_JSON	   = '../RaspBerryJam-e443aed01834.json'
 
 # Google Docs spreadsheet name.
 GDOCS_SPREADSHEET_NAME = 'RaspBerryJam'
 
 # How long to wait (in seconds) between measurements.
-FREQUENCY_SECONDS      = 30
+FREQUENCY_SECONDS	  = 30
 
 
 # build list of 1-wire devices
@@ -45,19 +45,19 @@ for device in devices:
 
 # Google sheets login	
 def login_open_sheet(oauth_key_file, spreadsheet):
-    """Connect to Google Docs spreadsheet and return the first worksheet."""
-    try:
-        json_key = json.load(open(oauth_key_file))
-        credentials = SignedJwtAssertionCredentials(json_key['client_email'],
-                                                    json_key['private_key'],
-                                                    ['https://spreadsheets.google.com/feeds'])
-        gc = gspread.authorize(credentials)
-        worksheet = gc.open(spreadsheet).sheet1
-        return worksheet
-    except Exception as ex:
-        print('Unable to login and get spreadsheet.  Check OAuth credentials, spreadsheet name, and make sure spreadsheet is shared to the client_email address in the OAuth .json file!')
-        print('Google sheet login failed with error:', ex)
-        sys.exit(1)
+	"""Connect to Google Docs spreadsheet and return the first worksheet."""
+	try:
+		json_key = json.load(open(oauth_key_file))
+		credentials = SignedJwtAssertionCredentials(json_key['client_email'],
+													json_key['private_key'],
+													['https://spreadsheets.google.com/feeds'])
+		gc = gspread.authorize(credentials)
+		worksheet = gc.open(spreadsheet).sheet1
+		return worksheet
+	except Exception as ex:
+		print('Unable to login and get spreadsheet.  Check OAuth credentials, spreadsheet name, and make sure spreadsheet is shared to the client_email address in the OAuth .json file!')
+		print('Google sheet login failed with error:', ex)
+		sys.exit(1)
 
 # Read the 1-wire device data from file.
 def read_temp_raw(device):
@@ -89,37 +89,37 @@ print('Logging sensor measurements to {0} every {1} seconds.'.format(GDOCS_SPREA
 print('Press Ctrl-C to quit.')
 worksheet = None
 while True:
-    # Login if necessary.
-    if worksheet is None:
-        worksheet = login_open_sheet(GDOCS_OAUTH_JSON, GDOCS_SPREADSHEET_NAME)
+	# Login if necessary.
+	if worksheet is None:
+		worksheet = login_open_sheet(GDOCS_OAUTH_JSON, GDOCS_SPREADSHEET_NAME)
 
-    # Attempt to get sensor reading.
-    humidity, temp = Adafruit_DHT.read(DHT_TYPE, DHT_PIN)
+	# Attempt to get sensor reading.
+	humidity, temp = Adafruit_DHT.read(DHT_TYPE, DHT_PIN)
 
-    # Skip to the next reading if a valid measurement couldn't be taken.
-    # This might happen if the CPU is under a lot of load and the sensor
-    # can't be reliably read (timing is critical to read the sensor).
-    if humidity is None or temp is None:
-        time.sleep(2)
-        continue
+	# Skip to the next reading if a valid measurement couldn't be taken.
+	# This might happen if the CPU is under a lot of load and the sensor
+	# can't be reliably read (timing is critical to read the sensor).
+	if humidity is None or temp is None:
+		time.sleep(2)
+		continue
 
-    print('Ambient Temperature: {0:0.1f} F'.format(temp * 9.0 / 5.0 + 32.0))
-    print('Ambient Humidity:    {0:0.1f} %'.format(humidity))
+	print('Ambient Temperature: {0:0.1f} F'.format(temp * 9.0 / 5.0 + 32.0))
+	print('Ambient Humidity:	{0:0.1f} %'.format(humidity))
 	for device in devices:
 		reading = read_temp(device)
 		print("Sensor: " + str(reading[0]) + " " + str(reading[2]) + " F" )
-   
-    # Append the data in the spreadsheet, including a timestamp
-    try:
-        worksheet.append_row((datetime.datetime.now(), temp * 9.0 / 5.0 + 32.0, humidity))
-    except:
-        # Error appending data, most likely because credentials are stale.
-        # Null out the worksheet so a login is performed at the top of the loop.
-        print('Append error, logging in again')
-        worksheet = None
-        time.sleep(FREQUENCY_SECONDS)
-        continue
 
-    # Wait 30 seconds before continuing
-    print('Wrote a row to {0}'.format(GDOCS_SPREADSHEET_NAME))
-    time.sleep(FREQUENCY_SECONDS)
+		# Append the data in the spreadsheet, including a timestamp
+		try:
+	 		worksheet.append_row((datetime.datetime.now(), temp * 9.0 / 5.0 + 32.0, humidity))
+		except:
+			# Error appending data, most likely because credentials are stale.
+			# Null out the worksheet so a login is performed at the top of the loop.
+			print('Append error, logging in again')
+			worksheet = None
+			time.sleep(FREQUENCY_SECONDS)
+			continue
+
+	# Wait 30 seconds before continuing
+	print('Wrote a row to {0}'.format(GDOCS_SPREADSHEET_NAME))
+	time.sleep(FREQUENCY_SECONDS)
