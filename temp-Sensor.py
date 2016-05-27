@@ -109,6 +109,7 @@ while True:
 	for device in devices:
 		reading = read_temp(device)
 		print("Sensor: " + str(reading[0]) + " " + str(reading[2]) + " F" )
+		str
 
 	# Append the data in the spreadsheet, including a timestamp
 	try:
@@ -124,3 +125,4 @@ while True:
 	# Wait 30 seconds before continuing
 	print('Wrote a row to {0}'.format(GDOCS_SPREADSHEET_NAME))
 	time.sleep(FREQUENCY_SECONDS)
+	break
