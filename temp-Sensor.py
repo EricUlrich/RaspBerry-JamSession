@@ -105,10 +105,10 @@ while True:
 
     print('Ambient Temperature: {0:0.1f} F'.format(temp * 9.0 / 5.0 + 32.0))
     print('Ambient Humidity:    {0:0.1f} %'.format(humidity))
-		for device in devices:
-			reading = read_temp(device)
-			print("Sensor: " + str(reading[0]) + " " + str(reading[2]) + " F" )
-	    
+for device in devices:
+	reading = read_temp(device)
+	print("Sensor: " + str(reading[0]) + " " + str(reading[2]) + " F" )
+   
     # Append the data in the spreadsheet, including a timestamp
     try:
         worksheet.append_row((datetime.datetime.now(), temp * 9.0 / 5.0 + 32.0, humidity))
