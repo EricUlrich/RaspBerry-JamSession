@@ -109,11 +109,10 @@ while True:
 	for device in devices:
 		reading = read_temp(device)
 		print("Sensor: " + str(reading[0]) + " " + str(reading[2]) + " F" )
-		str
 
 	# Append the data in the spreadsheet, including a timestamp
 	try:
- 		worksheet.append_row((datetime.datetime.now(), temp * 9.0 / 5.0 + 32.0, humidity))
+		worksheet.append_row((datetime.datetime.now(), temp * 9.0 / 5.0 + 32.0, humidity))
 	except:
 		# Error appending data, most likely because credentials are stale.
 		# Null out the worksheet so a login is performed at the top of the loop.
