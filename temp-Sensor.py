@@ -1,7 +1,47 @@
 #!/usr/bin/python
-# Add sources...
+#  
+# Parts of this code were taken from source below for the DHT family of sensors and the
+# google docs API interface exmaple
 #
+# https://github.com/adafruit/Adafruit_Python_DHT.git
+# examples/google_spreadsheet.py
 #
+# Google Spreadsheet DHT Sensor Data-logging Example
+
+# Depends on the 'gspread' and 'oauth2client' package being installed.  If you
+# have pip installed execute:
+#   sudo pip install gspread oauth2client
+
+# Also it's _very important_ on the Raspberry Pi to install the python-openssl
+# package because the version of Python is a bit old and can fail with Google's
+# new OAuth2 based authentication.  Run the following command to install the
+# the package:
+#   sudo apt-get update
+#   sudo apt-get install python-openssl
+
+# Copyright (c) 2014 Adafruit Industries
+# Author: Tony DiCola
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# Other examples and tutorials used for the DS18B20 family of sensors
+# http://www.modmypi.com/blog/ds18b20-one-wire-digital-temperature-sensor-and-the-raspberry-pi
 #
 
 import os
@@ -32,7 +72,7 @@ GDOCS_OAUTH_JSON	   = '../RaspBerryJam-e443aed01834.json'
 GDOCS_SPREADSHEET_NAME = 'RaspBerryJam'
 
 # How long to wait (in seconds) between measurements.
-FREQUENCY_SECONDS	  = 30
+FREQUENCY_SECONDS	  = 180
 
 
 # build list of 1-wire devices
@@ -78,12 +118,6 @@ def read_temp(device):
 		temp_c = float(temp_string) / 1000.0
 		temp_f = temp_c * 9.0 / 5.0 + 32.0
 		return device, temp_c, temp_f
-
-#while True:
-#	for device in devices:
-#		reading = read_temp(device)
-#		print("Sensor: " + str(reading[0]) + " Celsius: " + str(reading[1]) + " Fahrenheit: " + str(reading[2]))
-#	time.sleep(30)
 
 print('Logging sensor measurements to {0} every {1} seconds.'.format(GDOCS_SPREADSHEET_NAME, FREQUENCY_SECONDS))
 print('Press Ctrl-C to quit.')
@@ -145,4 +179,3 @@ while True:
 	print('Wrote a row to {0}'.format(GDOCS_SPREADSHEET_NAME))
 	del results_list1
 	time.sleep(FREQUENCY_SECONDS)
-	#break
