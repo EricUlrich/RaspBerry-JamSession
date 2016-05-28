@@ -43,9 +43,13 @@
 #
 # Other examples and tutorials used for the DS18B20 family of sensors
 # http://www.modmypi.com/blog/ds18b20-one-wire-digital-temperature-sensor-and-the-raspberry-pi
+# http://www.d3noob.org/2015/02/raspberry-pi-multiple-temperature.html
 #
 # OAuth2 from google
 # http://gspread.readthedocs.io/en/latest/oauth2.html
+# had to install this version to work on my Raspberry pi
+# pip install oauth2client==1.5.2
+# https://github.com/burnash/gspread/issues/357
 
 import os
 import time
@@ -75,7 +79,7 @@ GDOCS_OAUTH_JSON	   = '../RaspBerryJam-e443aed01834.json'
 GDOCS_SPREADSHEET_NAME = 'RaspBerryJam'
 
 # How long to wait (in seconds) between measurements.
-FREQUENCY_SECONDS	  = 180
+FREQUENCY_SECONDS	  = 300
 
 
 # build list of 1-wire devices
@@ -165,11 +169,13 @@ while True:
 	#print(len(results_list))
 	print('Sensor: ' + results_list[2] + ' {0:0.1f} F'.format(float(results_list[3])))
 	print('Sensor: ' + results_list[4] + ' {0:0.1f} F'.format(float(results_list[5])))
+	print('Sensor: ' + results_list[6] + ' {0:0.1f} F'.format(float(results_list[7])))
+	print('Sensor: ' + results_list[8] + ' {0:0.1f} F'.format(float(results_list[9])))
 	#print(float("{0:0.1f}".format(float(results_list[3]))))
 
 	# Append the data in the spreadsheet, including a timestamp
 	try:
-		worksheet.append_row((datetime.datetime.now(), results_list[0], results_list[1], results_list[2], float("{0:0.1f}".format(float(results_list[3]))), results_list[4], float("{0:0.1f}".format(float(results_list[5])))))
+		worksheet.append_row((datetime.datetime.now(), results_list[0], results_list[1], results_list[2], float("{0:0.1f}".format(float(results_list[3]))), results_list[4], float("{0:0.1f}".format(float(results_list[5]))), results_list[6], float("{0:0.1f}".format(float(results_list[7]))), results_list[8], float("{0:0.1f}".format(float(results_list[9])))))
 	except:
 		# Error appending data, most likely because credentials are stale.
 		# Null out the worksheet so a login is performed at the top of the loop.
