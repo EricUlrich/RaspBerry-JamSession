@@ -5,6 +5,7 @@
 #
 # https://github.com/adafruit/Adafruit_Python_DHT.git
 # examples/google_spreadsheet.py
+# https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/overview
 #
 # Google Spreadsheet DHT Sensor Data-logging Example
 
@@ -43,6 +44,8 @@
 # Other examples and tutorials used for the DS18B20 family of sensors
 # http://www.modmypi.com/blog/ds18b20-one-wire-digital-temperature-sensor-and-the-raspberry-pi
 #
+# OAuth2 from google
+# http://gspread.readthedocs.io/en/latest/oauth2.html
 
 import os
 import time
@@ -131,16 +134,16 @@ while True:
 	# Attempt to get sensor reading.
 	humidity, temp = Adafruit_DHT.read(DHT_TYPE, DHT_PIN)
 	# 
-	results_list.append(temp * 9.0 / 5.0 + 32.0)
-	results_list.append(humidity)
-	#print(results_list)
-	#print(len(results_list))
 	# Skip to the next reading if a valid measurement couldn't be taken.
 	# This might happen if the CPU is under a lot of load and the sensor
 	# can't be reliably read (timing is critical to read the sensor).
 	if humidity is None or temp is None:
 		time.sleep(2)
 		continue
+	results_list.append(temp * 9.0 / 5.0 + 32.0)
+	results_list.append(humidity)
+	#print(results_list)
+	#print(len(results_list))
 
 	print('Ambient Temperature: {0:0.1f} F'.format(results_list[0]))
 	print('Ambient Humidity:	{0:0.1f} %'.format(results_list[1]))
