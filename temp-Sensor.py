@@ -93,9 +93,14 @@ while True:
 	if worksheet is None:
 		worksheet = login_open_sheet(GDOCS_OAUTH_JSON, GDOCS_SPREADSHEET_NAME)
 
+	results_list = []
 	# Attempt to get sensor reading.
 	humidity, temp = Adafruit_DHT.read(DHT_TYPE, DHT_PIN)
-
+	# 
+	results_list.append(temp * 9.0 / 5.0 + 32.0)
+	results_list.append(humidity)
+	#print(results_list)
+	#print(len(results_list))
 	# Skip to the next reading if a valid measurement couldn't be taken.
 	# This might happen if the CPU is under a lot of load and the sensor
 	# can't be reliably read (timing is critical to read the sensor).
@@ -103,16 +108,31 @@ while True:
 		time.sleep(2)
 		continue
 
-	print('Ambient Temperature: {0:0.1f} F'.format(temp * 9.0 / 5.0 + 32.0))
-	print('Ambient Humidity:	{0:0.1f} %'.format(humidity))
+	print('Ambient Temperature: {0:0.1f} F'.format(results_list[0]))
+	print('Ambient Humidity:	{0:0.1f} %'.format(results_list[1]))
+	#device_count = len(devices)
 
 	for device in devices:
 		reading = read_temp(device)
-		print("Sensor: " + str(reading[0]) + " " + str(reading[2]) + " F" )
+		#print("Sensor: " + str(reading[0][20:35]))
+		try:
+			results_list1.extend([str(reading[0][20:35]), str(reading[2])])
+		except:
+			results_list1 = [str(reading[0][20:35]), str(reading[2])]
+
+		#print(results_list1)
+		#print(len(results_list1))
+
+	results_list.extend(results_list1)
+	#print(results_list)
+	#print(len(results_list))
+	print('Sensor: ' + results_list[2] + ' {0:0.1f} F'.format(float(results_list[3])))
+	print('Sensor: ' + results_list[4] + ' {0:0.1f} F'.format(float(results_list[5])))
+	#print(float("{0:0.1f}".format(float(results_list[3]))))
 
 	# Append the data in the spreadsheet, including a timestamp
 	try:
-		worksheet.append_row((datetime.datetime.now(), temp * 9.0 / 5.0 + 32.0, humidity))
+		worksheet.append_row((datetime.datetime.now(), results_list[0], results_list[1], results_list[2], float("{0:0.1f}".format(float(results_list[3]))), results_list[4], float("{0:0.1f}".format(float(results_list[5])))))
 	except:
 		# Error appending data, most likely because credentials are stale.
 		# Null out the worksheet so a login is performed at the top of the loop.
@@ -123,5 +143,6 @@ while True:
 
 	# Wait 30 seconds before continuing
 	print('Wrote a row to {0}'.format(GDOCS_SPREADSHEET_NAME))
+	del results_list1
 	time.sleep(FREQUENCY_SECONDS)
-	break
+	#break

@@ -69,7 +69,7 @@ DHT_PIN  = 4
 # Then use the File -> Share... command in the spreadsheet to share it with read
 # and write acess to the email address above.  If you don't do this step then the
 # updates to the sheet will fail!
-GDOCS_OAUTH_JSON       = 'RaspBerryJam-e443aed01834.json'
+GDOCS_OAUTH_JSON       = '../RaspBerryJam-e443aed01834.json'
 
 # Google Docs spreadsheet name.
 GDOCS_SPREADSHEET_NAME = 'RaspBerryJam'
@@ -112,12 +112,12 @@ while True:
         time.sleep(2)
         continue
 
-    print('Temperature: {0:0.1f} C'.format(temp))
+    print('Temperature: {0:0.1f} C'.format(temp * 9.0 / 5.0 + 32.0))
     print('Humidity:    {0:0.1f} %'.format(humidity))
 
     # Append the data in the spreadsheet, including a timestamp
     try:
-        worksheet.append_row((datetime.datetime.now(), temp, humidity))
+        worksheet.append_row((datetime.datetime.now(), temp * 9.0 / 5.0 + 32.0, humidity))
     except:
         # Error appending data, most likely because credentials are stale.
         # Null out the worksheet so a login is performed at the top of the loop.
